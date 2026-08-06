@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "project": "Agentic App Template",
+  "description": "Registro y Mapeo Oficial de Subagentes y Skills del Sistema",
+  "agents": [
+    {
+      "id": "agent-0-po",
+      "name": "Product Owner & Discovery Agent",
+      "role": "Product Owner / Analyst",
+      "skill": ".gemini/skills/project-init/SKILL.md",
+      "triggers": ["Inicia el proyecto", "/project-init", "Escanear proyecto existente", "/project-scan"],
+      "outputs": ["docs/PROJECT_CONTEXT.md", "docs/STACK_SPECIFICATION.md", "docs/BACKLOG.md"],
+      "tools": ["ask_question", "view_file", "write_to_file", "list_dir"]
+    },
+    {
+      "id": "agent-1-architect",
+      "name": "Architect & UX Designer Agent",
+      "role": "Software Architect & UI Designer",
+      "skill": ".gemini/skills/architect-ux/SKILL.md",
+      "triggers": ["Desarrollar historia", "Diseñar arquitectura"],
+      "requires_human_approval": true,
+      "outputs": ["docs/tasks/{story_id}/1-architecture-PROPOSAL.md", "docs/tasks/{story_id}/mockup.png"],
+      "tools": ["generate_image", "write_to_file", "view_file"]
+    },
+    {
+      "id": "agent-2-tdd",
+      "name": "TDD Test Engineer Agent",
+      "role": "QA Test Automation Engineer",
+      "skill": ".gemini/skills/tdd-engineer/SKILL.md",
+      "triggers": ["Arquitectura aprobada", "Escribir pruebas"],
+      "inputs": ["docs/tasks/{story_id}/1-architecture-APPROVED.md"],
+      "outputs": ["docs/tasks/{story_id}/2-test-report.md", "*.spec.ts"],
+      "tools": ["write_to_file", "run_command", "view_file"]
+    },
+    {
+      "id": "agent-3-dev",
+      "name": "Developer Implementer & Self-Healing Agent",
+      "role": "Fullstack Developer (Angular + PrimeNG + Backend)",
+      "skill": ".gemini/skills/developer-implementer/SKILL.md",
+      "triggers": ["Tests creados", "Implementar codigo"],
+      "rules": [
+        ".gemini/rules/frontend-primeng.md",
+        ".gemini/rules/backend-general.md",
+        ".gemini/rules/self-healing.md",
+        ".gemini/rules/git-worktrees-commits.md"
+      ],
+
+      "outputs": ["frontend/src/", "backend/src/", "database/migrations/"],
+      "tools": ["write_to_file", "replace_file_content", "run_command"]
+    },
+    {
+      "id": "agent-4-qa",
+      "name": "QA, Security & Documentation Agent",
+      "role": "Security Auditor & Documentation Specialist",
+      "skill": ".gemini/skills/qa-security-auditor/SKILL.md",
+      "triggers": ["Tests en verde", "Auditar y finalizar"],
+      "outputs": ["docs/tasks/{story_id}/3-qa-passed.md", "docs/BACKLOG.md"],
+      "tools": ["run_command", "view_file", "replace_file_content"]
+    },
+    {
+      "id": "agent-5-git-commit",
+      "name": "Git Commit Manager Agent",
+      "role": "Gitmoji Conventional Commit Specialist",
+      "skill": ".gemini/skills/git-commit-manager/SKILL.md",
+      "triggers": ["Haz un commit", "Realizar commit", "/git-commit"],
+      "rules": [".gemini/rules/git-worktrees-commits.md"],
+      "tools": ["run_command", "view_file"]
+    }
+  ]
+}
